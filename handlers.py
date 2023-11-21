@@ -11,8 +11,6 @@ async def start_handler(msg: Message):
     # bot.send_message(msg.chat.id, "Text")        можна і так записати
 
 # обробник вхідних повідомлень реагує на всі повідомлення, оскільки  msg: Message
-@router.message()
-async def message_handler(msg: Message):
-    await msg.answer(f"ID: {msg.from_user.id}")
+
 
 
