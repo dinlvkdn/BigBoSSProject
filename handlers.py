@@ -4,7 +4,7 @@ from aiogram.filters import Command
 
 router = Router()
 
-# обробник вхідних повідомлень
+#Diana <3
 @router.message(Command("start"))
 async def start_handler(msg: Message):
     await msg.answer("Вітаємо!Для аутентифікації Вам потрібно перейти за посиланням, та слідувати вказівкам. Після цього Ви зможете користуватися нашим ботом")
