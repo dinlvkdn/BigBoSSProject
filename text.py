@@ -3,4 +3,6 @@ start_sticker = 'CAACAgIAAxkBAAEKzNNlXlBVWJl51_aR5Q5cZbwMJXwoJwACbgUAAj-VzAqGOtl
 HELP_COMMANDS = """
 /help - список команд
 /start - розпочати роботу з ботом
+/role - обрати роль в команді
 """
+role = 'Оберіть роль в команді'
