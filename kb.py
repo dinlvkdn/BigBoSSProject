@@ -22,3 +22,15 @@ keyboard_role = InlineKeyboardMarkup(
     ]]
 )
 
+keyboard_designer = InlineKeyboardMarkup(
+    inline_keyboard=[[
+        InlineKeyboardButton(text = " Повернутися ",
+                            callback_data="back"),
+        InlineKeyboardButton(text = " Зв'язатися ",
+                            callback_data="contact"),
+        InlineKeyboardButton(text = " Надіслати дизайн ",
+                             callback_data="send_design"),
+        ]]
+)
+
+
