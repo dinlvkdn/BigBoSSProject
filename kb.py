@@ -51,6 +51,12 @@ keyboard_contact_bos = InlineKeyboardMarkup(
         ]]
 )
 
+
+kb_sendPr = [[KeyboardButton(text="Надіслати файл")]]
+keyboard_send_project_bos = ReplyKeyboardMarkup(keyboard=kb_sendPr, resize_keyboard=True)
+
+
+
 # DESIGNER
 keyboard_designer = InlineKeyboardMarkup(
     inline_keyboard=[[
