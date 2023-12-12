@@ -16,8 +16,9 @@ async def start_handler(msg: Message):
     await msg.answer_sticker(sticker=text.start_sticker)
     await msg.answer(text.initial_message,
                      parse_mode="HTML",
-                     reply_markup=kb.keyboard_authentication)
+                     reply_markup=kb.keyboard_role)
     await msg.delete()
+    # записати в базу даних id користувача
     await create_profile(user_id=msg.from_user.id)
 
 @router.message(Command("help"))
@@ -25,9 +26,9 @@ async def help_command(msg: Message):
     await msg.reply(text.HELP_COMMANDS)
     await msg.delete()
 
-@router.message(Command("role"))
-async def get_user_role(msg: Message):
-    await msg.reply(text.role, reply_markup=kb.keyboard_role)
+# @router.message(Command("role"))
+# async def get_user_role(msg: Message):
+#     await msg.reply(text.role, reply_markup=kb.keyboard_role)
 
 
 
