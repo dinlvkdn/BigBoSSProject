@@ -1,4 +1,6 @@
+import sqlite
 from aiogram import types, F, Router
+from aiogram.client import bot
 from aiogram.types import Message
 from aiogram.filters import Command
 import kb
@@ -36,21 +38,23 @@ async def help_command(msg: Message):
 async def role_selected_callback_handler(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
     selected_role = callback_query.data
+    # Записали роль в базу даних
     await create_profile(user_id, role=selected_role)
+    role = await get_role_and_id(user_id)
 
 
-    if selected_role == "boss_role":
+    if role == "boss_role":
         await callback_query.answer(text=text.role_bos)
         await callback_query.message.answer("Бос, оберіть опцію:", reply_markup=kb.keyboard_boss)
 
-    elif selected_role == "accountant_role":
+    elif role == "accountant_role":
         await callback_query.answer(text="Ви обрали роль - Бухгалтер")
 
-    elif selected_role == "designer_role":
+    elif role == "designer_role":
         await callback_query.answer(text="Ви обрали роль - Дизайнер")
         await callback_query.message.answer("Дизайнер, оберіть опцію:", reply_markup=kb.keyboard_designer)
 
-    elif selected_role == "developer_role":
+    elif role == "developer_role":
         await callback_query.answer(text="Ви обрали роль - розробника")
 
     await callback_query.answer()
@@ -58,8 +62,20 @@ async def role_selected_callback_handler(callback_query: types.CallbackQuery):
 
 # зтягування ролі з бази даних на прикладі боса
 async def is_boss(user_id):
-    role, _ = await get_role_and_id(user_id)
+    role = await get_role_and_id(user_id)
     return role == "boss_role"
+
+async def is_designer(user_id):
+    role = await get_role_and_id(user_id)
+    return role == "designer_role"
+
+async def is_accountant(user_id):
+    role = await get_role_and_id(user_id)
+    return role == "accountant_role"
+
+async def is_developer(user_id):
+    role = await get_role_and_id(user_id)
+    return role == "developer_role"
 
 
 @router.callback_query(lambda c: c.data == "contact_bos")
@@ -73,3 +89,31 @@ async def contact_bos_callback_handler(callback_query: types.CallbackQuery):
         await callback_query.answer("Ви не маєте доступу до цієї опції.")
 
     await callback_query.answer()
+
+
+@router.callback_query(lambda c: c.data == "send_project_bos")
+async def send_project_bos_callback_handler(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+
+    # Перевірка чи користувач є босом
+    if await is_boss(user_id):
+        await callback_query.message.answer("Ми готові прийняти твій проект! Будь ласка, надішли файл проекту. Також можна надіслати посилання на проект. Ми завжди готові до нових викликів! ", reply_markup=kb.keyboard_send_project_bos)
+    else:
+        await callback_query.answer("Ви не маєте доступу до цієї опції.")
+
+    await callback_query.answer()
+
+async def handle_received_file(msg: types.Message):
+    designer_user_id = sqlite.get_user_id_by_role("designer_role")
+    if designer_user_id:
+        await bot.forward_message(chat_id=designer_user_id, from_chat_id=msg.chat.id, message_id=msg.message_id)
+        await msg.reply(chat_id=designer_user_id, from_chat_id=msg.chat.id, message_id=msg.message_id)
+        await msg.reply("Твій файл успішно відправлено дизайнеру!")
+
+
+
+
+
+
+
+
