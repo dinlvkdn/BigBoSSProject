@@ -1,5 +1,5 @@
 import sqlite
-from aiogram import types, F, Router
+from aiogram import F, Router,Bot, Dispatcher, types
 from aiogram.client import bot
 from aiogram.types import Message
 from aiogram.filters import Command
@@ -10,8 +10,8 @@ from sqlite import db_start, create_profile, edit_profile, get_role_and_id
 async def on_startup(dp):
     await db_start()
 
-
 router = Router()
+
 
 @router.message(Command("start"))
 async def start_handler(msg: Message):
@@ -23,6 +23,7 @@ async def start_handler(msg: Message):
     # записати в базу даних id користувача
     await create_profile(user_id=msg.from_user.id)
 
+
 @router.message(Command("help"))
 async def help_command(msg: Message):
     await msg.reply(text.HELP_COMMANDS)
@@ -33,7 +34,6 @@ async def help_command(msg: Message):
 #     await msg.reply(text.role, reply_markup=kb.keyboard_role)
 
 
-
 @router.callback_query(lambda c: c.data in {"boss_role", "accountant_role", "designer_role", "developer_role"})
 async def role_selected_callback_handler(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
@@ -41,7 +41,6 @@ async def role_selected_callback_handler(callback_query: types.CallbackQuery):
     # Записали роль в базу даних
     await create_profile(user_id, role=selected_role)
     role = await get_role_and_id(user_id)
-
 
     if role == "boss_role":
         await callback_query.answer(text=text.role_bos)
@@ -55,7 +54,7 @@ async def role_selected_callback_handler(callback_query: types.CallbackQuery):
         await callback_query.message.answer("Дизайнер, оберіть опцію:", reply_markup=kb.keyboard_designer)
 
     elif role == "developer_role":
-        await callback_query.answer(text="Ви обрали роль - розробника")
+        await callback_query.answer(text="Ви обрали роль - Розробник")
 
     await callback_query.answer()
 
@@ -65,13 +64,16 @@ async def is_boss(user_id):
     role = await get_role_and_id(user_id)
     return role == "boss_role"
 
+
 async def is_designer(user_id):
     role = await get_role_and_id(user_id)
     return role == "designer_role"
 
+
 async def is_accountant(user_id):
     role = await get_role_and_id(user_id)
     return role == "accountant_role"
+
 
 async def is_developer(user_id):
     role = await get_role_and_id(user_id)
@@ -103,12 +105,16 @@ async def send_project_bos_callback_handler(callback_query: types.CallbackQuery)
 
     await callback_query.answer()
 
-async def handle_received_file(msg: types.Message):
-    designer_user_id = sqlite.get_user_id_by_role("designer_role")
-    if designer_user_id:
-        await bot.forward_message(chat_id=designer_user_id, from_chat_id=msg.chat.id, message_id=msg.message_id)
-        await msg.reply(chat_id=designer_user_id, from_chat_id=msg.chat.id, message_id=msg.message_id)
-        await msg.reply("Твій файл успішно відправлено дизайнеру!")
+
+@router.message(F.document)
+async def handle_received_file(message: types.Message):
+    accountant_user_id = await sqlite.get_user_id_by_role("accountant_role")
+    file_id = message.document.file_id
+    caption = message.caption
+    if accountant_user_id:
+        await bot.send_document(chat_id=accountant_user_id, document=file_id, caption=caption)
+        await message.reply(text='Файл успішно надіслано бухгалтеру')
+
 
 
 
