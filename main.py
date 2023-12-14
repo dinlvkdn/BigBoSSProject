@@ -14,7 +14,8 @@ async def main():
     # створюємо об'єкт бота з токеном
     bot = Bot(token=config.BOT_TOKEN, parse_mode=ParseMode.HTML)
     # створюємо об'єкт диспетчера   MemoryStorage()- дані які не зберігаються в бд будуть стерті при запуску
-    dp = Dispatcher(storage=MemoryStorage())
+    storage = MemoryStorage()
+    dp = Dispatcher(storage=storage)
     dp.include_router(router)
     await on_startup(dp)
     # видаляємо всі оновлення які пройщлт після останнього завершення роботи(для обробки тільки тих повідомлень які прийшли під час роботи а не за весь час)

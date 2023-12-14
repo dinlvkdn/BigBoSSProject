@@ -7,6 +7,7 @@ import kb
 import text
 from sqlite import db_start, create_profile, edit_profile, get_role_and_id
 
+
 async def on_startup(dp):
     await db_start()
 
@@ -43,17 +44,23 @@ async def role_selected_callback_handler(callback_query: types.CallbackQuery):
     role = await get_role_and_id(user_id)
 
     if role == "boss_role":
+        await callback_query.message.answer_sticker(sticker=text.bos_sticker)
         await callback_query.answer(text=text.role_bos)
         await callback_query.message.answer("Бос, оберіть опцію:", reply_markup=kb.keyboard_boss)
 
     elif role == "accountant_role":
+        await callback_query.message.answer_sticker(sticker=text.acc_sticker)
         await callback_query.answer(text="Ви обрали роль - Бухгалтер")
+        await callback_query.message.answer("Бухгалтер, оберіть опцію:", reply_markup=kb.keyboard_accountant)
+
 
     elif role == "designer_role":
+        await callback_query.message.answer_sticker(sticker=text.des_sticker)
         await callback_query.answer(text="Ви обрали роль - Дизайнер")
         await callback_query.message.answer("Дизайнер, оберіть опцію:", reply_markup=kb.keyboard_designer)
 
     elif role == "developer_role":
+        await callback_query.message.answer_sticker(sticker=text.dev_sticker)
         await callback_query.answer(text="Ви обрали роль - Розробник")
 
     await callback_query.answer()
@@ -116,10 +123,46 @@ async def handle_received_file(message: types.Message):
         await message.reply(text='Файл успішно надіслано бухгалтеру')
 
 
+@router.callback_query(lambda c: c.data == "return")
+async def return_to_role_selection(callback_query: types.CallbackQuery):
+
+    await callback_query.message.answer(text.role, reply_markup=kb.keyboard_role)
 
 
+@router.callback_query(lambda c: c.data == "back_contact_designer")
+async def return_to_keyboard_designer(callback_query: types.CallbackQuery):
+
+    await callback_query.message.answer(text.role, reply_markup=kb.keyboard_designer)
+
+@router.callback_query(lambda c: c.data == "back_contact_bos")
+async def return_to_keyboard_bos(callback_query: types.CallbackQuery):
+
+    await callback_query.message.answer(text.role, reply_markup=kb.keyboard_boss)
 
 
+@router.callback_query(lambda c: c.data == "contact_accountant")
+async def return_to_keyboard_bos(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    await callback_query.message.answer("Оберіть з ким хочете зв'язатися:", reply_markup=kb.keyboard_contact_accountant)
 
+    await callback_query.answer()
 
+@router.callback_query(lambda c: c.data.startswith("designer_contact_accountant"))
+async def contact_designer(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    await callback_query.answer("Напишіть повідомлення до дизайнера.")
 
+@router.callback_query(lambda c: c.data.startswith("bos_contact_accountant"))
+async def contact_bos(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    await callback_query.answer("Напишіть повідомлення до боса.")
+
+@router.callback_query(lambda c: c.data.startswith("developer_contact_accountant"))
+async def contact_developer(callback_query: types.CallbackQuery):
+    user_id = callback_query.from_user.id
+    await callback_query.answer("Напишіть повідомлення до розробника.")
+
+@router.callback_query(lambda c: c.data == "back_contact_accountant")
+async def return_to_keyboard_bos(callback_query: types.CallbackQuery):
+
+    await callback_query.message.answer(text.role, reply_markup=kb.keyboard_accountant)

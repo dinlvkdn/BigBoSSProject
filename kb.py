@@ -35,6 +35,8 @@ keyboard_boss = InlineKeyboardMarkup(
                             callback_data="contact_bos"),
         InlineKeyboardButton(text = " Повернути проект ",
                             callback_data="back_project_bos"),
+        InlineKeyboardButton(text = " Роль ",
+                            callback_data="return"),
         ]]
 )
 
@@ -61,11 +63,13 @@ keyboard_send_project_bos = ReplyKeyboardMarkup(keyboard=kb_sendPr, resize_keybo
 keyboard_designer = InlineKeyboardMarkup(
     inline_keyboard=[[
         InlineKeyboardButton(text = " Повернути ",
-                            callback_data="back"),
+                            callback_data="back_project_designer"),
         InlineKeyboardButton(text = " Зв'язатися ",
                             callback_data="contact"),
         InlineKeyboardButton(text = " Надіслати дизайн ",
                              callback_data="send_design"),
+        InlineKeyboardButton(text = " Роль ",
+                            callback_data="return"),
         ]]
 )
 
@@ -83,18 +87,29 @@ keyboard_contact_designer = InlineKeyboardMarkup(
 )
 
 
-
-
-# зв'язок для дизайнера
-contact_keyboard_designer = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(text="Бос", callback_data="boss"),
-            InlineKeyboardButton(text="Бухгалтер", callback_data="accountant"),
-            InlineKeyboardButton(text="Розробник", callback_data="developer"),
-        ],
-        [InlineKeyboardButton(text="Повернутися назад", callback_data="back")],
-    ]
+# accountant
+keyboard_accountant = InlineKeyboardMarkup(
+    inline_keyboard=[[
+        InlineKeyboardButton(text = " Повернути ",
+                            callback_data="back_project_accountant"),
+        InlineKeyboardButton(text = " Зв'язатися ",
+                            callback_data="contact_accountant"),
+        InlineKeyboardButton(text = " Підтвердити ",
+                             callback_data="confirm_budget_accountant"),
+        InlineKeyboardButton(text = " Роль ",
+                            callback_data="return"),
+        ]]
 )
 
-
+keyboard_contact_accountant = InlineKeyboardMarkup(
+    inline_keyboard=[[
+        InlineKeyboardButton(text = " Бос ",
+                             callback_data="bos_contact_accountant"),
+        InlineKeyboardButton(text = " Дизайнер ",
+                            callback_data="designer_contact_accountant"),
+        InlineKeyboardButton(text = " Розробник ",
+                            callback_data="developer_contact_accountant"),
+        InlineKeyboardButton(text = " Повернутися назад ",
+                            callback_data="back_contact_accountant"),
+        ]]
+)
