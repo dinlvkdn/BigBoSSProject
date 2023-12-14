@@ -7,6 +7,11 @@ import kb
 import text
 from sqlite import db_start, create_profile, edit_profile, get_role_and_id
 
+API_TOKEN = '6942412160:AAE9DtY6ic3viZPrg35qvm1Klwi_MZ9B2S0'
+bot = Bot(token=API_TOKEN)
+dp = Dispatcher()
+
+
 async def on_startup(dp):
     await db_start()
 
