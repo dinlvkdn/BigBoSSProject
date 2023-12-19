@@ -55,9 +55,10 @@ keyboard_contact_bos = InlineKeyboardMarkup(
 
 
 kb_sendPr = [[KeyboardButton(text="Надіслати файл")]]
+
 keyboard_send_project_bos = ReplyKeyboardMarkup(keyboard=kb_sendPr, resize_keyboard=True)
-
-
+kb_sendText = [[KeyboardButton(text="Надіслати повідомлення")]]
+kb_send_mess_from_acc_to_desi = ReplyKeyboardMarkup(keyboard = kb_sendText, resize_keyboard=True)
 
 # DESIGNER
 keyboard_designer = InlineKeyboardMarkup(
