@@ -114,3 +114,31 @@ keyboard_contact_accountant = InlineKeyboardMarkup(
                             callback_data="back_contact_accountant"),
         ]]
 )
+
+
+# Developer
+keyboard_developer= InlineKeyboardMarkup(
+    inline_keyboard=[[
+        InlineKeyboardButton(text = " Повернути ",
+                            callback_data="back_project_developer"),
+        InlineKeyboardButton(text = " Зв'язатися ",
+                            callback_data="contact_developer"),
+        InlineKeyboardButton(text = " Підтвердити ",
+                             callback_data="confirm_design_developer"),
+        InlineKeyboardButton(text = " Роль ",
+                            callback_data="return"),
+        ]]
+)
+
+keyboard_contact_developer = InlineKeyboardMarkup(
+    inline_keyboard=[[
+        InlineKeyboardButton(text = " Бос ",
+                             callback_data="bos_contact_developer"),
+        InlineKeyboardButton(text = " Дизайнер ",
+                            callback_data="designer_contact_developer"),
+        InlineKeyboardButton(text = " Бухгалтер ",
+                            callback_data="accountant_contact_developer"),
+        InlineKeyboardButton(text = " Повернутися назад ",
+                            callback_data="back_contact_developer"),
+        ]]
+)
