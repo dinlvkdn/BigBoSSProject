@@ -29,8 +29,6 @@ keyboard_boss = InlineKeyboardMarkup(
     inline_keyboard=[[
         InlineKeyboardButton(text = " Зареєструвати проект ",
                             callback_data="send_project_bos"),
-        InlineKeyboardButton(text = " Змінити проект ",
-                             callback_data="change_project_bos"),
         InlineKeyboardButton(text = " Зв'язатися ",
                             callback_data="contact_bos"),
         InlineKeyboardButton(text = " Повернути проект ",
@@ -54,11 +52,11 @@ keyboard_contact_bos = InlineKeyboardMarkup(
 )
 
 
-kb_sendPr = [[KeyboardButton(text="Надіслати файл")]]
-
-keyboard_send_project_bos = ReplyKeyboardMarkup(keyboard=kb_sendPr, resize_keyboard=True)
-kb_sendText = [[KeyboardButton(text="Надіслати повідомлення")]]
-kb_send_mess_from_acc_to_desi = ReplyKeyboardMarkup(keyboard = kb_sendText, resize_keyboard=True)
+# kb_sendPr = [[KeyboardButton(text="Надіслати файл")]]
+#
+# keyboard_send_project_bos = ReplyKeyboardMarkup(keyboard=kb_sendPr, resize_keyboard=True)
+# kb_sendText = [[KeyboardButton(text="Надіслати повідомлення")]]
+# kb_send_mess_from_acc_to_desi = ReplyKeyboardMarkup(keyboard = kb_sendText, resize_keyboard=True)
 
 # DESIGNER
 keyboard_designer = InlineKeyboardMarkup(
@@ -66,9 +64,9 @@ keyboard_designer = InlineKeyboardMarkup(
         InlineKeyboardButton(text = " Повернути ",
                             callback_data="back_project_designer"),
         InlineKeyboardButton(text = " Зв'язатися ",
-                            callback_data="contact"),
+                            callback_data="contact_designer"),
         InlineKeyboardButton(text = " Надіслати дизайн ",
-                             callback_data="send_design"),
+                             callback_data="send_design_designer"),
         InlineKeyboardButton(text = " Роль ",
                             callback_data="return"),
         ]]
@@ -95,8 +93,8 @@ keyboard_accountant = InlineKeyboardMarkup(
                             callback_data="back_project_accountant"),
         InlineKeyboardButton(text = " Зв'язатися ",
                             callback_data="contact_accountant"),
-        InlineKeyboardButton(text = " Підтвердити ",
-                             callback_data="confirm_budget_accountant"),
+        InlineKeyboardButton(text = " Бюджет ",
+                             callback_data="budget_accountant"),
         InlineKeyboardButton(text = " Роль ",
                             callback_data="return"),
         ]]
@@ -123,8 +121,8 @@ keyboard_developer= InlineKeyboardMarkup(
                             callback_data="back_project_developer"),
         InlineKeyboardButton(text = " Зв'язатися ",
                             callback_data="contact_developer"),
-        InlineKeyboardButton(text = " Підтвердити ",
-                             callback_data="confirm_design_developer"),
+        InlineKeyboardButton(text = " Надіслати проект ",
+                             callback_data="send_project_developer"),
         InlineKeyboardButton(text = " Роль ",
                             callback_data="return"),
         ]]
