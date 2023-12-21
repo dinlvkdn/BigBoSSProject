@@ -35,6 +35,8 @@ keyboard_boss = InlineKeyboardMarkup(
                             callback_data="contact_bos"),
         InlineKeyboardButton(text = " Повернути проект ",
                             callback_data="back_project_bos"),
+        InlineKeyboardButton(text = " Роль ",
+                            callback_data="return"),
         ]]
 )
 
@@ -53,19 +55,22 @@ keyboard_contact_bos = InlineKeyboardMarkup(
 
 
 kb_sendPr = [[KeyboardButton(text="Надіслати файл")]]
+
 keyboard_send_project_bos = ReplyKeyboardMarkup(keyboard=kb_sendPr, resize_keyboard=True)
-
-
+kb_sendText = [[KeyboardButton(text="Надіслати повідомлення")]]
+kb_send_mess_from_acc_to_desi = ReplyKeyboardMarkup(keyboard = kb_sendText, resize_keyboard=True)
 
 # DESIGNER
 keyboard_designer = InlineKeyboardMarkup(
     inline_keyboard=[[
         InlineKeyboardButton(text = " Повернути ",
-                            callback_data="back"),
+                            callback_data="back_project_designer"),
         InlineKeyboardButton(text = " Зв'язатися ",
                             callback_data="contact"),
         InlineKeyboardButton(text = " Надіслати дизайн ",
                              callback_data="send_design"),
+        InlineKeyboardButton(text = " Роль ",
+                            callback_data="return"),
         ]]
 )
 
@@ -83,18 +88,57 @@ keyboard_contact_designer = InlineKeyboardMarkup(
 )
 
 
+# accountant
+keyboard_accountant = InlineKeyboardMarkup(
+    inline_keyboard=[[
+        InlineKeyboardButton(text = " Повернути ",
+                            callback_data="back_project_accountant"),
+        InlineKeyboardButton(text = " Зв'язатися ",
+                            callback_data="contact_accountant"),
+        InlineKeyboardButton(text = " Підтвердити ",
+                             callback_data="confirm_budget_accountant"),
+        InlineKeyboardButton(text = " Роль ",
+                            callback_data="return"),
+        ]]
+)
 
-
-# зв'язок для дизайнера
-contact_keyboard_designer = InlineKeyboardMarkup(
-    inline_keyboard=[
-        [
-            InlineKeyboardButton(text="Бос", callback_data="boss"),
-            InlineKeyboardButton(text="Бухгалтер", callback_data="accountant"),
-            InlineKeyboardButton(text="Розробник", callback_data="developer"),
-        ],
-        [InlineKeyboardButton(text="Повернутися назад", callback_data="back")],
-    ]
+keyboard_contact_accountant = InlineKeyboardMarkup(
+    inline_keyboard=[[
+        InlineKeyboardButton(text = " Бос ",
+                             callback_data="bos_contact_accountant"),
+        InlineKeyboardButton(text = " Дизайнер ",
+                            callback_data="designer_contact_accountant"),
+        InlineKeyboardButton(text = " Розробник ",
+                            callback_data="developer_contact_accountant"),
+        InlineKeyboardButton(text = " Повернутися назад ",
+                            callback_data="back_contact_accountant"),
+        ]]
 )
 
 
+# Developer
+keyboard_developer= InlineKeyboardMarkup(
+    inline_keyboard=[[
+        InlineKeyboardButton(text = " Повернути ",
+                            callback_data="back_project_developer"),
+        InlineKeyboardButton(text = " Зв'язатися ",
+                            callback_data="contact_developer"),
+        InlineKeyboardButton(text = " Підтвердити ",
+                             callback_data="confirm_design_developer"),
+        InlineKeyboardButton(text = " Роль ",
+                            callback_data="return"),
+        ]]
+)
+
+keyboard_contact_developer = InlineKeyboardMarkup(
+    inline_keyboard=[[
+        InlineKeyboardButton(text = " Бос ",
+                             callback_data="bos_contact_developer"),
+        InlineKeyboardButton(text = " Дизайнер ",
+                            callback_data="designer_contact_developer"),
+        InlineKeyboardButton(text = " Бухгалтер ",
+                            callback_data="accountant_contact_developer"),
+        InlineKeyboardButton(text = " Повернутися назад ",
+                            callback_data="back_contact_developer"),
+        ]]
+)

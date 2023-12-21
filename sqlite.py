@@ -56,3 +56,10 @@ async def send_document_to_role(role, file_id):
             await dp.bot.send_document(member_id[0], file_id)
         except Exception as e:
             print(f"Error sending document to {member_id[0]}: {e}")
+
+
+
+async def is_role_taken(selected_role: str) -> bool:
+    # Функція, яка перевіряє чи існує користувач з обраною роллю в базі даних
+    cur.execute("SELECT 1 FROM users WHERE role == ?", (selected_role,))
+    return cur.fetchone() is not None
