@@ -157,7 +157,7 @@ async def get_message_bos(message: types.Message, state: FSMContext):
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
         await bot.send_message(chat_id=developer, text=f"У вас нове повідомлення від боса:\n\n{text}")
         await message.reply(text=f'Повідомлення успішно надіслано розробнику.')
-
+    await message.answer("Бос, оберіть опцію:", reply_markup=kb.keyboard_boss)
     await state.clear()
 
 
@@ -201,7 +201,7 @@ async def get_message_accountant(message: types.Message, state: FSMContext):
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
         await bot.send_message(chat_id=developer, text=f"У вас нове повідомлення від бухгалтера:\n\n{text}")
         await message.reply(text=f'Повідомлення успішно надіслано розробнику.')
-
+    await message.answer("Бухгалтер, оберіть опцію:", reply_markup=kb.keyboard_accountant)
     await state.clear()
 
 
@@ -244,7 +244,7 @@ async def get_message_developer(message: types.Message, state: FSMContext):
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
         await bot.send_message(chat_id=accountant, text=f"У вас нове повідомлення від розробника:\n\n{text}")
         await message.reply(text=f'Повідомлення успішно надіслано бухгалтеру.')
-
+    await message.answer("Розробник, оберіть опцію:", reply_markup=kb.keyboard_developer)
     await state.clear()
 
 
@@ -297,7 +297,7 @@ async def get_message_designer(message: types.Message, state: FSMContext):
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
         await bot.send_message(chat_id=developer, text=f"У вас нове повідомлення від дизайнера:\n\n{text}")
         await message.reply(text=f'Повідомлення успішно надіслано розробнику.')
-
+    await message.answer("Дизайнере, оберіть опцію:", reply_markup=kb.keyboard_designer)
     await state.clear()
 
 
@@ -368,7 +368,7 @@ async def handle_received_file(message: types.Message, state: FSMContext):
                                    text="Бос зареєстрував новий проект.\n Будь ласка, перегляньте та оцініть проект, надайте згоду")
             await bot.send_document(chat_id=developer_user_id, document=file_id, caption=caption)
             await message.reply(text='Файл успішно надіслано розробнику')
-
+    await message.answer("Бос, оберіть опцію:", reply_markup=kb.keyboard_boss)
     await state.clear()
 
 
@@ -394,6 +394,7 @@ async def handle_send_budget_accountant(message: types.Message, state: FSMContex
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
         await bot.send_message(chat_id=designer_user_id, text=f"Бухгалтер надіслав бюджет.\nОсь:\n\n{text}")
         await message.reply(text='Бюджет надіслано')
+        await message.answer("Бухгалтер, оберіть опцію:", reply_markup=kb.keyboard_accountant)
     await state.clear()
 
 
@@ -418,6 +419,7 @@ async def handle_send_design_designer(message: types.Message, state: FSMContext)
                                text="Дизайнер надіслав дизайн, перегляньте ")
         await bot.send_document(chat_id=developer_user_id, document=file_id, caption=caption)
         await message.reply(text='Дизайн надіслано')
+        await message.answer("Дизайнере, оберіть опцію:", reply_markup=kb.keyboard_designer)
     await state.clear()
 
 
@@ -442,6 +444,7 @@ async def handle_send_code(message: types.Message, state: FSMContext):
                                text="Програміст надіслав готовий проект\n ")
         await bot.send_document(chat_id=boss_user_id, document=file_id, caption=caption)
         await message.reply(text='Проект надіслано босу на перевірку')
+        await message.answer("Розробник, оберіть опцію:", reply_markup=kb.keyboard_developer)
     await state.clear()
 
 
@@ -464,6 +467,7 @@ async def handle_message_back_project_accountant(message: types.Message, state: 
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
         await bot.send_message(chat_id=bos, text=f"Бос, бухгалтер повернув проект.\nОсь повідолмення:\n\n{text}")
         await message.reply(text='Повідомлення надіслано')
+        await message.answer("Бухгалтер, оберіть опцію:", reply_markup=kb.keyboard_accountant)
 
     await state.clear()
 
@@ -488,6 +492,7 @@ async def handle_message_back_project_accountant(message: types.Message, state: 
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
         await bot.send_message(chat_id=accountant, text=f"Бухгалтер, дизайнер повернув бюджет.\nОсь повідолмення:\n\n{text}")
         await message.reply(text='Повідомлення надіслано')
+        await message.answer("Дизайнере, оберіть опцію:", reply_markup=kb.keyboard_designer)
 
     await state.clear()
 
@@ -512,6 +517,7 @@ async def handle_message_back_project_accountant(message: types.Message, state: 
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
         await bot.send_message(chat_id=designer, text=f"Дизайнере, розробник повернув дизайн.\nОсь повідолмення:\n\n{text}")
         await message.reply(text='Повідомлення надіслано')
+        await message.answer("Розробник, оберіть опцію:", reply_markup=kb.keyboard_developer)
 
     await state.clear()
 
@@ -535,5 +541,6 @@ async def handle_message_back_project_bos(message: types.Message, state: FSMCont
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
         await bot.send_message(chat_id=developer, text=f"Бос повернув проект.\nОсь повідомлення:\n\n{text}")
         await message.reply(text='Повідомлення надіслано')
+        await message.answer("Бос, оберіть опцію:", reply_markup=kb.keyboard_boss)
 
     await state.clear()
