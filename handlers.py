@@ -4,7 +4,7 @@ from stateText import Contact
 
 import db
 import sqlite
-from aiogram import F, Router, Bot, Dispatcher, types
+from aiogram import Router, Bot, Dispatcher, types
 from aiogram.client import bot
 from aiogram.types import Message
 from aiogram.filters import Command
@@ -121,10 +121,16 @@ async def contact_bos_callback_handler(callback_query: types.CallbackQuery):
 
 @router.callback_query(lambda c: c.data in {"accountant_contact_bos", "designer_contact_bos", "developer_contact_bos"})
 async def send_message_bos(callback_query: types.CallbackQuery, state: FSMContext):
-    await callback_query.message.answer(text=f'Бос, напишіть повідомлення ')
+    accountant = await sqlite.get_user_id_by_role("accountant_role")
+    designer = await sqlite.get_user_id_by_role("designer_role")
+    developer = await sqlite.get_user_id_by_role("developer_role")
+    if not (accountant or designer or developer):
+        callback_query.message.answer(text=" 🔺 Користувач ще не зареєструвався 🔺 ")
+    else:
+        await callback_query.message.answer(text=f'Бос, напишіть повідомлення ')
 
-    await state.set_state(Contact.text)
-    await state.set_data(dict(user_type=callback_query.data))
+        await state.set_state(Contact.text)
+        await state.set_data(dict(user_type=callback_query.data))
     await callback_query.answer()
 
 
@@ -208,6 +214,7 @@ async def contact_developer(callback_query: types.CallbackQuery):
 
 @router.callback_query(lambda c: c.data in {"bos_contact_developer", "designer_contact_developer", "accountant_contact_developer"})
 async def send_message_developer(callback_query: types.CallbackQuery, state: FSMContext):
+
     await callback_query.message.answer(text=f'Робробник, напишіть повідомлення: ')
 
     await state.set_state(Contact.text)
@@ -237,8 +244,6 @@ async def get_message_developer(message: types.Message, state: FSMContext):
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
         await bot.send_message(chat_id=accountant, text=f"У вас нове повідомлення від розробника:\n\n{text}")
         await message.reply(text=f'Повідомлення успішно надіслано.')
-
-
 
     await state.clear()
 
@@ -319,6 +324,8 @@ async def handle_received_file(message: types.Message, state: FSMContext):
     caption = message.caption
     data = await state.get_data()
     comand_get_file = data.get('comand_get_file')
+    print(file_id)
+    file_temp = file_id
     if comand_get_file == 'send_project_bos':
         if accountant_user_id:
             await db.db_start()
@@ -329,16 +336,17 @@ async def handle_received_file(message: types.Message, state: FSMContext):
             await message.reply(text='Файл успішно надіслано бухгалтеру')
             # await bot.send_message(chat_id=accountant_user_id, reply_markup=kb.)
 
+
     await state.clear()
 
 
-# @router.callback_query(lambda c: c.data == "confirm_budget_accountant")
-# async def confirm_budget_accountant(callback_query: types.CallbackQuery):
-#     designer_user_id = await sqlite.get_user_id_by_role("designer_role")
-#     file_id = await db.get_file_ids()
-#     caption = await db.get_captions()
-#     if designer_user_id:
-#         await bot.send_message(chat_id=designer_user_id,
-#                                text="Бос зареєстрував новий проект.\n Бухгалтер підтвердив вже проект, намалюй дизайн і все буде добре")
-#         await bot.send_document(chat_id=designer_user_id, document=file_id, caption=caption)
-#         await callback_query.message.answer(text="Проект було надіслано дизайнеру")
+@router.callback_query(lambda c: c.data == "confirm_budget_accountant")
+async def confirm_budget_accountant(callback_query: types.CallbackQuery):
+    designer_user_id = await sqlite.get_user_id_by_role("designer_role")
+    file_id = await db.get_latest_file_ids()
+    caption = await db.get_latest_captions()
+    if designer_user_id:
+        await bot.send_message(chat_id=designer_user_id,
+                               text="Бос зареєстрував новий проект.\n Бухгалтер підтвердив вже проект, намалюй дизайн і все буде добре")
+        await bot.send_document(chat_id=designer_user_id, document=file_temp, caption='file')
+        await callback_query.message.answer(text="Проект було надіслано дизайнеру")
