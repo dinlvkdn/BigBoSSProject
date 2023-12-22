@@ -65,7 +65,7 @@ async def role_selected_callback_handler(callback_query: types.CallbackQuery):
     selected_role = callback_query.data
     # Записали роль в базу даних
     if await is_role_taken(selected_role):
-        await callback_query.answer(text=f"Роль {selected_role} вже зайнята.")
+        await callback_query.answer(text=f"Роль {selected_role} вже зайнята :(")
         return
     await create_profile(user_id, role=selected_role)
     role = await get_role_and_id(user_id)
@@ -73,23 +73,23 @@ async def role_selected_callback_handler(callback_query: types.CallbackQuery):
     if role == "boss_role":
         await callback_query.message.answer_sticker(sticker=text.bos_sticker)
         await callback_query.answer(text=text.role_bos)
-        await callback_query.message.answer("Бос, оберіть опцію:", reply_markup=kb.keyboard_boss)
+        await callback_query.message.answer("[Бос]->Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_boss)
 
     elif role == "accountant_role":
         await callback_query.message.answer_sticker(sticker=text.acc_sticker)
-        await callback_query.answer(text="Ви обрали роль - Бухгалтер")
-        await callback_query.message.answer("Бухгалтер, оберіть опцію:", reply_markup=kb.keyboard_accountant)
+        await callback_query.answer(text="Ласкаво просимо! Ви вибрали роль - Бухгалтер")
+        await callback_query.message.answer("[Бухгалтер]->Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_accountant)
 
 
     elif role == "designer_role":
         await callback_query.message.answer_sticker(sticker=text.des_sticker)
-        await callback_query.answer(text="Ви обрали роль - Дизайнер")
-        await callback_query.message.answer("Дизайнер, оберіть опцію:", reply_markup=kb.keyboard_designer)
+        await callback_query.answer(text="Ласкаво просимо! Ви вибрали роль - Дизайнер")
+        await callback_query.message.answer("[Дизайнер]->Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_designer)
 
     elif role == "developer_role":
         await callback_query.message.answer_sticker(sticker=text.dev_sticker)
-        await callback_query.answer(text="Ви обрали роль - Розробник")
-        await callback_query.message.answer("Розробник, оберіть опцію:", reply_markup=kb.keyboard_developer)
+        await callback_query.answer(text="Ласкаво просимо! Ви вибрали роль - Розробник")
+        await callback_query.message.answer("[Розробник]-> Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_developer)
 
     await callback_query.answer()
 
@@ -125,7 +125,7 @@ async def contact_bos_callback_handler(callback_query: types.CallbackQuery):
 
     # Перевірка чи користувач є босом
     if await is_boss(user_id):
-        await callback_query.message.answer("Оберіть з ким хочете зв'язатися:", reply_markup=kb.keyboard_contact_bos)
+        await callback_query.message.answer("📞 Оберіть з ким хочете зв'язатися:", reply_markup=kb.keyboard_contact_bos)
     else:
         await callback_query.answer("Ви не маєте доступу до цієї опції.")
 
@@ -133,7 +133,7 @@ async def contact_bos_callback_handler(callback_query: types.CallbackQuery):
 
 @router.callback_query(lambda c: c.data in {"accountant_contact_bos", "designer_contact_bos", "developer_contact_bos"})
 async def send_message_bos(callback_query: types.CallbackQuery, state: FSMContext):
-    await callback_query.message.answer(text=f'Бос, напишіть повідомлення ')
+    await callback_query.message.answer(text=f'Чудово! Напишіть ваше повідомлення тут, Босе 👇 ')
 
     await state.set_state(Contact.text)
     await state.set_data(dict(user_type=callback_query.data))
@@ -150,26 +150,26 @@ async def get_message_bos(message: types.Message, state: FSMContext):
     developer = await sqlite.get_user_id_by_role("developer_role")
     if(user_type == "accountant_contact_bos"):
         await bot.send_animation(chat_id=accountant, animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=accountant, text=f"У вас нове повідомлення від боса:\n\n{text}")
-        await message.reply(text=f'Повідомлення успішно надіслано бухгалтеру.')
+        await bot.send_message(chat_id=accountant, text=f"📩 У вас нове повідомлення від боса:\n\n{text}")
+        await message.reply(text=f'Повідомлення успішно надіслано бухгалтеру 📨')
     elif (user_type == "designer_contact_bos"):
         await bot.send_animation(chat_id=designer,
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=designer, text=f"У вас нове повідомлення від боса:\n\n{text}")
-        await message.reply(text=f'Повідомлення успішно надіслано дизайнеру.')
+        await bot.send_message(chat_id=designer, text=f"📩 У вас нове повідомлення від боса:\n\n{text}")
+        await message.reply(text=f'Повідомлення успішно надіслано дизайнеру 📨')
     elif (user_type == "developer_contact_bos"):
         await bot.send_animation(chat_id=developer,
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=developer, text=f"У вас нове повідомлення від боса:\n\n{text}")
-        await message.reply(text=f'Повідомлення успішно надіслано розробнику.')
-    await message.answer("Бос, оберіть опцію:", reply_markup=kb.keyboard_boss)
+        await bot.send_message(chat_id=developer, text=f"📩 У вас нове повідомлення від боса:\n\n{text}")
+        await message.reply(text=f'Повідомлення успішно надіслано розробнику 📨')
+    await message.answer("[Бос]->Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_boss)
     await state.clear()
 
 
 @router.callback_query(lambda c: c.data == "contact_accountant")
 async def contact_accountant(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
-    await callback_query.message.answer("Оберіть з ким хочете зв'язатися:", reply_markup=kb.keyboard_contact_accountant)
+    await callback_query.message.answer("📞 Оберіть з ким хочете зв'язатися:", reply_markup=kb.keyboard_contact_accountant)
 
     await callback_query.answer()
 
@@ -177,7 +177,7 @@ async def contact_accountant(callback_query: types.CallbackQuery):
 @router.callback_query(lambda c: c.data in {"bos_contact_accountant", "designer_contact_accountant", "developer_contact_accountant",
                          "back_contact_accountant"})
 async def send_message_accountant(callback_query: types.CallbackQuery, state: FSMContext):
-    await callback_query.message.answer(text=f'Бухгалтер, напишіть повідомлення: ')
+    await callback_query.message.answer(text=f'Чудово! Напишіть ваше повідомлення тут, Бухгалтере 👇 ')
 
     await state.set_state(ContactAccountant.textA)
     await state.set_data(dict(user_type=callback_query.data))
@@ -194,26 +194,26 @@ async def get_message_accountant(message: types.Message, state: FSMContext):
     developer = await sqlite.get_user_id_by_role("developer_role")
     if(user_type == "bos_contact_accountant"):
         await bot.send_animation(chat_id=bos, animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=bos, text=f"У вас нове повідомлення від бухгалтера:\n\n{text}")
-        await message.reply(text=f'Повідомлення успішно надіслано босу.')
+        await bot.send_message(chat_id=bos, text=f"📩 У вас нове повідомлення від бухгалтера:\n\n{text}")
+        await message.reply(text=f'Повідомлення успішно надіслано босу 📨')
     elif (user_type == "designer_contact_accountant"):
         await bot.send_animation(chat_id=designer,
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=designer, text=f"У вас нове повідомлення від бухгалтера:\n\n{text}")
-        await message.reply(text=f'Повідомлення успішно надіслано дизайнеру.')
+        await bot.send_message(chat_id=designer, text=f"📩 У вас нове повідомлення від бухгалтера:\n\n{text}")
+        await message.reply(text=f'Повідомлення успішно надіслано дизайнеру 📨')
     elif (user_type == "developer_contact_accountant"):
         await bot.send_animation(chat_id=developer,
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=developer, text=f"У вас нове повідомлення від бухгалтера:\n\n{text}")
-        await message.reply(text=f'Повідомлення успішно надіслано розробнику.')
-    await message.answer("Бухгалтер, оберіть опцію:", reply_markup=kb.keyboard_accountant)
+        await bot.send_message(chat_id=developer, text=f"📩 У вас нове повідомлення від бухгалтера:\n\n{text}")
+        await message.reply(text=f'Повідомлення успішно надіслано розробнику 📨')
+    await message.answer("[Бухгалтер]->Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_accountant)
     await state.clear()
 
 
 @router.callback_query(lambda c: c.data == "contact_developer")
 async def contact_developer(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
-    await callback_query.message.answer("Оберіть з ким хочете зв'язатися:", reply_markup=kb.keyboard_contact_developer)
+    await callback_query.message.answer("📞Оберіть з ким хочете зв'язатися:", reply_markup=kb.keyboard_contact_developer)
 
     await callback_query.answer()
 
@@ -221,7 +221,7 @@ async def contact_developer(callback_query: types.CallbackQuery):
 @router.callback_query(lambda c: c.data in {"bos_contact_developer", "designer_contact_developer", "accountant_contact_developer"})
 async def send_message_developer(callback_query: types.CallbackQuery, state: FSMContext):
 
-    await callback_query.message.answer(text=f'Робробник, напишіть повідомлення: ')
+    await callback_query.message.answer(text=f'Чудово! Напишіть ваше повідомлення тут, Розробнику 👇 ')
 
     await state.set_state(ContactDeveloper.textD)
     await state.set_data(dict(user_type=callback_query.data))
@@ -237,19 +237,19 @@ async def get_message_developer(message: types.Message, state: FSMContext):
     accountant = await sqlite.get_user_id_by_role("accountant_role")
     if(user_type == "bos_contact_developer"):
         await bot.send_animation(chat_id=bos, animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=bos, text=f"У вас нове повідомлення від розробника:\n\n{text}")
-        await message.reply(text=f'Повідомлення успішно надіслано босу.')
+        await bot.send_message(chat_id=bos, text=f"📩 У вас нове повідомлення від розробника:\n\n{text}")
+        await message.reply(text=f'Повідомлення успішно надіслано босу 📨')
     elif (user_type == "designer_contact_developer"):
         await bot.send_animation(chat_id=designer,
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=designer, text=f"У вас нове повідомлення від розробника:\n\n{text}")
-        await message.reply(text=f'Повідомлення успішно надіслано дизайнеру.')
+        await bot.send_message(chat_id=designer, text=f"📩 У вас нове повідомлення від розробника:\n\n{text}")
+        await message.reply(text=f'Повідомлення успішно надіслано дизайнеру 📨')
     elif (user_type == "accountant_contact_developer"):
         await bot.send_animation(chat_id=accountant,
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=accountant, text=f"У вас нове повідомлення від розробника:\n\n{text}")
-        await message.reply(text=f'Повідомлення успішно надіслано бухгалтеру.')
-    await message.answer("Розробник, оберіть опцію:", reply_markup=kb.keyboard_developer)
+        await bot.send_message(chat_id=accountant, text=f"📩 У вас нове повідомлення від розробника:\n\n{text}")
+        await message.reply(text=f'Повідомлення успішно надіслано бухгалтеру 📨')
+    await message.answer("[Розробник]-> Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_developer)
     await state.clear()
 
 
@@ -259,7 +259,7 @@ async def contact_designer(callback_query: types.CallbackQuery):
     user_id = callback_query.from_user.id
 
     if await is_designer(user_id):
-        await callback_query.message.answer("Оберіть з ким хочете зв'язатися:", reply_markup=kb.keyboard_contact_designer)
+        await callback_query.message.answer("📞 Оберіть з ким хочете зв'язатися:", reply_markup=kb.keyboard_contact_designer)
     else:
         await callback_query.answer("Ви не маєте доступу до цієї опції.")
 
@@ -290,19 +290,19 @@ async def get_message_designer(message: types.Message, state: FSMContext):
     developer = await sqlite.get_user_id_by_role("developer_role")
     if(user_type == "accountant_contact_designer"):
         await bot.send_animation(chat_id=accountant, animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=accountant, text=f"У вас нове повідомлення від дизайнера:\n\n{text}")
-        await message.reply(text=f'Повідомлення успішно надіслано бухгалтеру.')
+        await bot.send_message(chat_id=accountant, text=f"📩 У вас нове повідомлення від дизайнера:\n\n{text}")
+        await message.reply(text=f'Повідомлення успішно надіслано бухгалтеру 📨')
     elif (user_type == "bos_contact_designer"):
         await bot.send_animation(chat_id=bos,
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=bos, text=f"У вас нове повідомлення від дизайнера:\n\n{text}")
-        await message.reply(text=f'Повідомлення успішно надіслано босу.')
+        await bot.send_message(chat_id=bos, text=f"📩 У вас нове повідомлення від дизайнера:\n\n{text}")
+        await message.reply(text=f'Повідомлення успішно надіслано босу 📨')
     elif (user_type == "developer_contact_designer"):
         await bot.send_animation(chat_id=developer,
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=developer, text=f"У вас нове повідомлення від дизайнера:\n\n{text}")
-        await message.reply(text=f'Повідомлення успішно надіслано розробнику.')
-    await message.answer("Дизайнере, оберіть опцію:", reply_markup=kb.keyboard_designer)
+        await bot.send_message(chat_id=developer, text=f"📩 У вас нове повідомлення від дизайнера:\n\n{text}")
+        await message.reply(text=f'Повідомлення успішно надіслано розробнику 📨')
+    await message.answer("[Дизайнер]-> Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_designer)
     await state.clear()
 
 
@@ -315,16 +315,16 @@ async def return_to_role_selection(callback_query: types.CallbackQuery):
 
 @router.callback_query(lambda c: c.data == "back_contact_designer")
 async def return_to_keyboard_designer(callback_query: types.CallbackQuery):
-    await callback_query.message.answer(text='Дизайнер, оберіть опцію:', reply_markup=kb.keyboard_designer)
+    await callback_query.message.answer(text='[Дизайнер]-> Оберіть опцію, яка вас цікавить:', reply_markup=kb.keyboard_designer)
 
 
 @router.callback_query(lambda c: c.data == "back_contact_bos")
 async def return_to_keyboard_bos(callback_query: types.CallbackQuery):
-    await callback_query.message.answer(text='Бос, оберіть опцію: ', reply_markup=kb.keyboard_boss)
+    await callback_query.message.answer(text='[Бос]-> Оберіть опцію, яка вас цікавить:', reply_markup=kb.keyboard_boss)
 
 @router.callback_query(lambda c: c.data == "back_contact_developer")
 async def return_to_keyboard_developer(callback_query: types.CallbackQuery):
-    await callback_query.message.answer(text = 'Розробник, оберіть опцію: ', reply_markup=kb.keyboard_developer)
+    await callback_query.message.answer(text = '[Розробник]-> Оберіть опцію, яка вас цікавить:', reply_markup=kb.keyboard_developer)
 
 
 
@@ -338,7 +338,7 @@ async def send_project_bos_callback_handler(callback_query: types.CallbackQuery,
     user_id = callback_query.from_user.id
     if await is_boss(user_id):
         await callback_query.message.answer(
-            "📍Ми готові прийняти твій проект!\n Будь ласка, надішли файл проекту.\n Також можна підкріпити коментарі.")
+            "🖇 Ми готові прийняти ваш проект! Будь ласка, надішліть файл проекту та, за бажанням, додайте коментарі.")
     else:
         await callback_query.answer("Ви не маєте доступу до цієї опції.")
     await state.set_state(getFile.file)
@@ -359,21 +359,21 @@ async def handle_received_file(message: types.Message, state: FSMContext):
             # await db.db_start()
             # await db.save_file_id(file_id, caption)
             await bot.send_message(chat_id=accountant_user_id,
-                                   text="Бос зареєстрував новий проект.\n Будь ласка, перегляньте та оцініть проект щодо бюджету та надайте згоду")
+                                   text='📌 Вітання! Зареєстровано новий проект. Просимо вас переглянути та оцінити його по бюджету 🧮, а також надати згоду на його виконання.')
             await bot.send_document(chat_id=accountant_user_id, document=file_id, caption=caption)
-            await message.reply(text='Файл успішно надіслано бухгалтеру')
+            await message.reply(text='✅ Файл успішно надіслано бухгалтеру')
 
         if designer_user_id:
             await bot.send_message(chat_id=designer_user_id,
-                                   text="Бос зареєстрував новий проект.\n Будь ласка, перегляньте та оцініть проект щодо бюджету та надайте згоду")
+                                   text='📌 Вітання! Зареєстровано новий проект. Просимо вас переглянути та оцінити його за дизайном 🎀, а також надати згоду на його виконання.')
             await bot.send_document(chat_id=designer_user_id, document=file_id, caption=caption)
-            await message.reply(text='Файл успішно надіслано дизайнеру')
+            await message.reply(text='✅ Файл успішно надіслано дизайнеру')
         if developer_user_id:
             await bot.send_message(chat_id=developer_user_id,
-                                   text="Бос зареєстрував новий проект.\n Будь ласка, перегляньте та оцініть проект, надайте згоду")
+                                   text='📌 Вітання! Зареєстровано новий проект. Просимо вас переглянути та оцінити його по реалізації 🛠, а також надати згоду на його виконання.')
             await bot.send_document(chat_id=developer_user_id, document=file_id, caption=caption)
-            await message.reply(text='Файл успішно надіслано розробнику')
-    await message.answer("Бос, оберіть опцію:", reply_markup=kb.keyboard_boss)
+            await message.reply(text='✅ Файл успішно надіслано розробнику')
+    await message.answer("[Бос]-> Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_boss)
     await state.clear()
 
 
@@ -384,7 +384,7 @@ async def handle_received_file(message: types.Message, state: FSMContext):
 @router.callback_query(lambda c: c.data == "budget_accountant")
 async def budget_accountant(callback_query: types.CallbackQuery, state: FSMContext):
     user_id = callback_query.from_user.id
-    await callback_query.message.answer("📍Ми готові прийняти твій бюджет!\n Будь ласка, надішли його")
+    await callback_query.message.answer("📌 Ми готові прийняти твій бюджет! Будь ласка, надішли його нам, щоб ми могли продовжити роботу.")
     await state.set_state(send_budget_accountant.budget)
     await state.set_data(dict(command=callback_query.data))
     await callback_query.answer()
@@ -397,9 +397,9 @@ async def handle_send_budget_accountant(message: types.Message, state: FSMContex
     if command == "budget_accountant":
         await bot.send_animation(chat_id=designer_user_id,
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=designer_user_id, text=f"Бухгалтер надіслав бюджет.\nОсь:\n\n{text}")
-        await message.reply(text='Бюджет надіслано')
-        await message.answer("Бухгалтер, оберіть опцію:", reply_markup=kb.keyboard_accountant)
+        await bot.send_message(chat_id=designer_user_id, text=f"📩 Бухгалтер надіслав бюджет . Ось файл для вашого ознайомлення:\n\n{text}")
+        await message.reply(text='✅ Бюджет надіслано')
+        await message.answer("[Бухгалтер]-> Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_accountant)
     await state.clear()
 
 
@@ -408,7 +408,7 @@ async def handle_send_budget_accountant(message: types.Message, state: FSMContex
 @router.callback_query(lambda c: c.data == "send_design_designer")
 async def send_design(callback_query: types.CallbackQuery, state: FSMContext):
     user_id = callback_query.from_user.id
-    await callback_query.message.answer("📍Ми готові прийняти твій дизайн!\n Будь ласка, надішли файл:")
+    await callback_query.message.answer("🖇 Ми готові прийняти твій дизайн!\n Будь ласка, надішли його нам, щоб ми могли продовжити роботу.")
     await state.set_state(design_designer.file)
     await state.set_data(dict(command=callback_query.data))
     await callback_query.answer()
@@ -421,10 +421,10 @@ async def handle_send_design_designer(message: types.Message, state: FSMContext)
     command = data.get('command')
     if command == "send_design_designer":
         await bot.send_message(chat_id=developer_user_id,
-                               text="Дизайнер надіслав дизайн, перегляньте ")
+                               text="📩 Дизайнер надіслав свій проект для вашого перегляду 🎨. Будь ласка, перегляньте його і поділіться вашими враженнями.")
         await bot.send_document(chat_id=developer_user_id, document=file_id, caption=caption)
-        await message.reply(text='Дизайн надіслано')
-        await message.answer("Дизайнере, оберіть опцію:", reply_markup=kb.keyboard_designer)
+        await message.reply(text='✅ Дизайн надіслано')
+        await message.answer("[Дизайнер]-> Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_designer)
     await state.clear()
 
 
@@ -433,7 +433,7 @@ async def handle_send_design_designer(message: types.Message, state: FSMContext)
 @router.callback_query(lambda c: c.data == "send_project_developer")
 async def send_project_developer(callback_query: types.CallbackQuery, state: FSMContext):
     user_id = callback_query.from_user.id
-    await callback_query.message.answer("📍Ми готові прийняти твій код!\n Будь ласка, надішли файл:")
+    await callback_query.message.answer("🖇 Ми готові прийняти твій код!\n Будь ласка, надішли його нам, щоб ми могли продовжити роботу.")
     await state.set_state(code_developer.file)
     await state.set_data(dict(command=callback_query.data))
     await callback_query.answer()
@@ -446,10 +446,10 @@ async def handle_send_code(message: types.Message, state: FSMContext):
     command = data.get('command')
     if command == "send_project_developer":
         await bot.send_message(chat_id=boss_user_id,
-                               text="Програміст надіслав готовий проект\n ")
+                               text="📩 Програміст надіслав готовий проект\n ")
         await bot.send_document(chat_id=boss_user_id, document=file_id, caption=caption)
-        await message.reply(text='Проект надіслано босу на перевірку')
-        await message.answer("Розробник, оберіть опцію:", reply_markup=kb.keyboard_developer)
+        await message.reply(text='✅ Проект надіслано босу на перевірку')
+        await message.answer("[Розробник]-> Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_developer)
     await state.clear()
 
 
@@ -457,7 +457,7 @@ async def handle_send_code(message: types.Message, state: FSMContext):
 @router.callback_query(lambda c: c.data == "back_project_accountant")
 async def back_project_accountant(callback_query: types.CallbackQuery, state: FSMContext):
     user_id = callback_query.from_user.id
-    await callback_query.message.reply(text='Напишіть повідомлення: чому саме не підійшов проект')
+    await callback_query.message.reply(text='Будь ласка, поділіться з нами причиною, чому проект не відповідає вашим очікуванням 📝')
     await state.set_state(get_message_from_accountant.message)
     await state.set_data(dict(type_command=callback_query.data))
     await callback_query.answer()
@@ -470,9 +470,9 @@ async def handle_message_back_project_accountant(message: types.Message, state: 
     if (type_command == "back_project_accountant"):
         await bot.send_animation(chat_id=bos,
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=bos, text=f"Бос, бухгалтер повернув проект.\nОсь повідолмення:\n\n{text}")
-        await message.reply(text='Повідомлення надіслано')
-        await message.answer("Бухгалтер, оберіть опцію:", reply_markup=kb.keyboard_accountant)
+        await bot.send_message(chat_id=bos, text=f"Бос, бухгалтер повернув проект для перегляду та корекцій. \nОсь текст повідомлення: \n\n{text}")
+        await message.reply(text='✅ Повідомлення надіслано')
+        await message.answer("[Бухгалтер]-> Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_accountant)
 
     await state.clear()
 
@@ -482,7 +482,7 @@ async def handle_message_back_project_accountant(message: types.Message, state: 
 @router.callback_query(lambda c: c.data == "back_project_designer")
 async def back_project_designer(callback_query: types.CallbackQuery, state: FSMContext):
     user_id = callback_query.from_user.id
-    await callback_query.message.reply(text='Напишіть повідомлення: чому саме не підійшов бюджет')
+    await callback_query.message.reply(text='Будь ласка, поділіться з нами причиною, чому проект не відповідає вашим очікуванням 📝')
     await state.set_state(get_message_from_designer.message)
     await state.set_data(dict(type_command=callback_query.data))
     await callback_query.answer()
@@ -495,9 +495,9 @@ async def handle_message_back_project_accountant(message: types.Message, state: 
     if (type_command == "back_project_designer"):
         await bot.send_animation(chat_id=accountant,
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=accountant, text=f"Бухгалтер, дизайнер повернув бюджет.\nОсь повідолмення:\n\n{text}")
-        await message.reply(text='Повідомлення надіслано')
-        await message.answer("Дизайнере, оберіть опцію:", reply_markup=kb.keyboard_designer)
+        await bot.send_message(chat_id=accountant, text=f"Бухгалтере, дизайнер повернув проект для перегляду та корекцій. \nОсь текст повідомлення:\n\n{text}")
+        await message.reply(text='✅ Повідомлення надіслано')
+        await message.answer("[Дизайнер]-> Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_designer)
 
     await state.clear()
 
@@ -507,7 +507,7 @@ async def handle_message_back_project_accountant(message: types.Message, state: 
 @router.callback_query(lambda c: c.data == "back_project_developer")
 async def back_project_developer(callback_query: types.CallbackQuery, state: FSMContext):
     user_id = callback_query.from_user.id
-    await callback_query.message.reply(text='Напишіть повідомлення: чому саме не підійшов дизайн')
+    await callback_query.message.reply(text='Будь ласка, поділіться з нами причиною, чому дизайн не відповідає вашим очікуванням 📝')
     await state.set_state(get_message_from_developer.message)
     await state.set_data(dict(type_command=callback_query.data))
     await callback_query.answer()
@@ -520,9 +520,9 @@ async def handle_message_back_project_accountant(message: types.Message, state: 
     if (type_command == "back_project_developer"):
         await bot.send_animation(chat_id=designer,
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=designer, text=f"Дизайнере, розробник повернув дизайн.\nОсь повідолмення:\n\n{text}")
-        await message.reply(text='Повідомлення надіслано')
-        await message.answer("Розробник, оберіть опцію:", reply_markup=kb.keyboard_developer)
+        await bot.send_message(chat_id=designer, text=f"Дизайнере, програміст повернув проект для перегляду та корекцій. \nОсь текст повідомлення:\n\n{text}")
+        await message.reply(text='✅ Повідомлення надіслано')
+        await message.answer("[Розробник]-> Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_developer)
 
     await state.clear()
 
@@ -531,7 +531,7 @@ async def handle_message_back_project_accountant(message: types.Message, state: 
 @router.callback_query(lambda c: c.data == "back_project_bos")
 async def back_project_bos(callback_query: types.CallbackQuery, state: FSMContext):
     user_id = callback_query.from_user.id
-    await callback_query.message.reply(text='Напишіть повідомлення: чому саме не підійшов проект')
+    await callback_query.message.reply(text='Будь ласка, поділіться з нами причиною, чому реалізація проекту не відповідає вашим очікуванням 📝')
     await state.set_state(get_message_from_bos.message)
     await state.set_data(dict(type_command=callback_query.data))
     await callback_query.answer()
@@ -544,8 +544,8 @@ async def handle_message_back_project_bos(message: types.Message, state: FSMCont
     if (type_command == "back_project_bos"):
         await bot.send_animation(chat_id=developer,
                                  animation="CAACAgEAAxkBAAEK-RdlfLNndKTAjloZjVmhM1GXR9y_9AACTQIAAtzQQESgDBKpHPSHsTME")
-        await bot.send_message(chat_id=developer, text=f"Бос повернув проект.\nОсь повідомлення:\n\n{text}")
-        await message.reply(text='Повідомлення надіслано')
-        await message.answer("Бос, оберіть опцію:", reply_markup=kb.keyboard_boss)
+        await bot.send_message(chat_id=developer, text=f"Розробнику, бос повернув проект для перегляду та корекцій. \nОсь текст повідомлення:\n\n{text}")
+        await message.reply(text='✅ Повідомлення надіслано')
+        await message.answer("[Бос]-> Оберіть опцію, яка вас цікавить:", reply_markup=kb.keyboard_boss)
 
     await state.clear()
